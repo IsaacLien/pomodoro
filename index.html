@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Pomodoro</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #0a0a0a;
+            color: #0ff;
+            overflow: hidden;
+        }
+
+        #lavaCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px #0ff,
+                         0 0 20px #0ff,
+                         0 0 30px #0ff;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .timer {
+            font-size: 8rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px #0ff;
+            margin: 2rem 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            font-size: 1.2rem;
+            padding: 1rem 2rem;
+            background-color: transparent;
+            color: #0ff;
+            border: 2px solid #0ff;
+            border-radius: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 5px #0ff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        button:hover {
+            background-color: #0ff;
+            color: #000;
+            box-shadow: 0 0 20px #0ff;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+
+        .timer.active {
+            animation: glitch 0.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="lavaCanvas"></canvas>
+    <div class="container">
+        <h1>Pomodoro Timer</h1>
+        <div class="timer" id="time">25:00</div>
+        <div class="controls">
+            <button id="startBtn">Start</button>
+            <button id="pauseBtn">Pause</button>
+            <button id="resetBtn">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        // Lava Background
+        class LavaBackground {
+            constructor() {
+                this.canvas = document.getElementById('lavaCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.resize();
+                this.points = [];
+                this.numberOfPoints = 50;
+                this.createPoints();
+                this.animate();
+
+                window.addEventListener('resize', () => this.resize());
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            createPoints() {
+                for (let i = 0; i < this.numberOfPoints; i++) {
+                    this.points.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        speedX: Math.random() * 2 - 1,
+                        speedY: Math.random() * 2 - 1
+                    });
+                }
+            }
+
+            animate() {
+                this.ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                for (let point of this.points) {
+                    point.x += point.speedX;
+                    point.y += point.speedY;
+
+                    if (point.x < 0 || point.x > this.canvas.width) point.speedX *= -1;
+                    if (point.y < 0 || point.y > this.canvas.height) point.speedY *= -1;
+
+                    this.ctx.beginPath();
+                    this.ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
+                    this.ctx.fillStyle = '#0ff';
+                    this.ctx.fill();
+
+                    for (let otherPoint of this.points) {
+                        let distance = Math.sqrt(
+                            Math.pow(point.x - otherPoint.x, 2) + 
+                            Math.pow(point.y - otherPoint.y, 2)
+                        );
+                        if (distance < 100) {
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(point.x, point.y);
+                            this.ctx.lineTo(otherPoint.x, otherPoint.y);
+                            this.ctx.strokeStyle = `rgba(0, 255, 255, ${1 - distance/100})`;
+                            this.ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        // Initialize background
+        const lavaBackground = new LavaBackground();
+
+        // Timer functionality
+        const timeDisplay = document.getElementById('time');
+        const startButton = document.getElementById('startBtn');
+        const pauseButton = document.getElementById('pauseBtn');
+        const resetButton = document.getElementById('resetBtn');
+
+        let timeLeft = 25 * 60;
+        let timerId = null;
+
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (timerId === null) {
+                timerId = setInterval(() => {
+                    timeLeft--;
+                    updateDisplay();
+                    timeDisplay.classList.add('active');
+                    
+                    if (timeLeft === 0) {
+                        clearInterval(timerId);
+                        timerId = null;
+                        timeDisplay.classList.remove('active');
+                        alert('Time is up!');
+                        resetTimer();
+                    }
+                }, 1000);
+                
+                startButton.disabled = true;
+                pauseButton.disabled = false;
+            }
+        }
+
+        function pauseTimer() {
+            clearInterval(timerId);
+            timerId = null;
+            startButton.disabled = false;
+            pauseButton.disabled = true;
+            timeDisplay.classList.remove('active');
+        }
+
+        function resetTimer() {
+            clearInterval(timerId);
+            timerId = null;
+            timeLeft = 25 * 60;
+            updateDisplay();
+            startButton.disabled = false;
+            pauseButton.disabled = true;
+            timeDisplay.classList.remove('active');
+        }
+
+        startButton.addEventListener('click', startTimer);
+        pauseButton.addEventListener('click', pauseTimer);
+        resetButton.addEventListener('click', resetTimer);
+
+        pauseButton.disabled = true;
+        updateDisplay();
+    </script>
+</body>
+</html> 
