@@ -1,9 +1,9 @@
 // DOM Element References
 const timeDisplay = document.getElementById('time');
 const modeDisplay = document.getElementById('mode');
-const startButton = document.getElementById('start');
-const pauseButton = document.getElementById('pause');
-const resetButton = document.getElementById('reset');
+const startButton = document.getElementById('startBtn');
+const pauseButton = document.getElementById('pauseBtn');
+const resetButton = document.getElementById('resetBtn');
 const pomodoroCount = document.getElementById('pomodoro-count');
 const soundEnabled = document.getElementById('soundEnabled');
 const workTimeInput = document.getElementById('workTime');
@@ -21,10 +21,24 @@ const audio = new Audio('data:audio/wav;base64,...'); // Base64 encoded beep sou
 
 // Core Timer Functions
 function updateDisplay() {
-    // Converts seconds into MM:SS format
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
-    timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    const newTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    // Get old time
+    const oldTime = timeDisplay.textContent;
+    
+    // Only add animation if the time has changed
+    if (oldTime !== newTime) {
+        // Create spans for each character
+        const html = newTime.split('').map((digit, index) => {
+            const isChanged = oldTime && digit !== oldTime[index];
+            const className = isChanged ? 'digit changing' : 'digit';
+            return `<span class="${className}">${digit}</span>`;
+        }).join('');
+        
+        timeDisplay.innerHTML = html;
+    }
 }
 
 function switchMode() {
