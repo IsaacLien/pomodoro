@@ -237,4 +237,42 @@ h1::after {
 #restMode {
     color: #f0f;
     border-color: #f0f;
+}
+
+.start-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.start-button:hover {
+    background-color: #45a049;
+}
+
+.controls button.start-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.controls button.start-button:hover {
+    background-color: #45a049;
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.controls button.start-button {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+    color: white;
+}
+
+.controls button.start-button:hover {
+    background-color: #45a049;
+    border-color: #45a049;
+    color: white;
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
 } 
