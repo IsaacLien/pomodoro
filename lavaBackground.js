@@ -65,7 +65,7 @@ class LavaBackground {
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Draw grid background
-        this.ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
+        this.ctx.strokeStyle = 'rgba(0, 255, 102, 0.1)';
         this.ctx.lineWidth = 1;
         const gridSize = 50;
         for(let x = 0; x < this.canvas.width; x += gridSize) {
