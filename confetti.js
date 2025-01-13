@@ -1,7 +1,8 @@
 class Confetti {
     constructor() {
         this.particles = [];
-        this.colors = ['#ff6b6b', '#4ecdc4', '#45b7af', '#ff8787', '#ffffff'];
+        // Vegas-themed colors
+        this.colors = ['#ff00ff', '#ffff00', '#00ffff', '#ff0000', '#ffffff'];
         this.isActive = false;
     }
 

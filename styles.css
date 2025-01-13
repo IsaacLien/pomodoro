@@ -1,23 +1,109 @@
+/* Vegas theme colors */
+:root {
+    --neon-pink: #ff00ff;
+    --neon-yellow: #ffff00;
+    --neon-blue: #00ffff;
+    --neon-red: #ff0000;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #000;
+    color: var(--neon-pink);
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    margin: 15vh 0 0 0;
+    padding: 0;
+    width: 100%;
+    color: var(--neon-pink);
+    text-shadow: 0 0 10px var(--neon-pink),
+                 0 0 20px var(--neon-pink);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
 .timer {
-    font-size: 8rem;
-    font-weight: bold;
-    text-shadow: 0 0 20px #00ff66;
-    margin: 2rem 0;
+    font-size: 5rem;
+    text-align: center;
+    margin: auto 0;
+    padding: 0;
+    color: var(--neon-pink);
+    text-shadow: 0 0 20px var(--neon-pink);
     font-family: 'Courier New', monospace;
-    color: #ff0000 !important;
 }
 
-@keyframes digitFade {
-    0% { opacity: 1; }
-    50% { opacity: 0.2; }
-    100% { opacity: 1; }
+.controls {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    margin: 0 0 5vh 0;
+    gap: 10px;
 }
 
-.digit {
-    display: inline-block;
-    color: #ff0000 !important;
+button {
+    flex: 1;
+    font-size: 1rem;
+    padding: 15px 0;
+    background: transparent;
+    border: 1px solid var(--neon-pink);
+    color: var(--neon-yellow);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
 }
 
-.changing {
-    animation: digitFade 0.5s ease-in-out;
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media screen and (max-width: 430px) {
+    h1 {
+        font-size: 2rem;
+        margin: 10vh 0 0 0;
+    }
+
+    .timer {
+        font-size: 4.5rem;
+    }
+
+    .controls {
+        padding: 20px;
+        margin: 0 0 4vh 0;
+    }
+
+    button {
+        padding: 20px 0;
+        font-size: 0.9rem;
+    }
+}
+
+/* iPhone specific adjustments */
+@supports (padding: env(safe-area-inset-top)) {
+    .container {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
 } 

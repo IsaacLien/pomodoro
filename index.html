@@ -11,7 +11,7 @@
             padding: 0;
             min-height: 100vh;
             background-color: #0a0a0a;
-            color: #00ff66;
+            color: #ffff00;
             overflow: hidden;
         }
 
@@ -39,20 +39,21 @@
             font-size: 3rem;
             text-transform: uppercase;
             letter-spacing: 4px;
-            text-shadow: 0 0 10px #00ff66,
-                         0 0 20px #00ff66,
-                         0 0 30px #00ff66;
+            text-shadow: 0 0 10px #ff00ff,
+                         0 0 20px #ff00ff,
+                         0 0 30px #ff00ff;
             margin-bottom: 2rem;
             position: relative;
+            animation: vegasColors 4s infinite;
         }
 
         .timer {
             font-size: 8rem;
             font-weight: bold;
-            text-shadow: 0 0 20px #00ff66;
+            text-shadow: 0 0 20px #ffff00;
             margin: 2rem 0;
             font-family: 'Courier New', monospace;
-            color: #ff0000;
+            animation: vegasColors 4s infinite;
         }
 
         .controls {
@@ -64,9 +65,9 @@
             font-size: 1.2rem;
             padding: 1rem 2rem;
             background-color: transparent;
-            color: #00ff66;
+            color: #ffff00;
             
-            border: 2px solid #00ff66;
+            border: 2px solid #ffff00;
             border-radius: 5px;
             cursor: pointer;
             text-transform: uppercase;
@@ -74,19 +75,45 @@
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
-            text-shadow: 0 0 5px #00ff66;
-            box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+            text-shadow: 0 0 5px #ffff00;
+            animation: buttonGlow 4s infinite;
         }
 
         button:hover {
-            background-color: #00ff66;
+            background-color: #ffff00;
             color: #000;
-            box-shadow: 0 0 20px #00ff66;
+            box-shadow: 0 0 20px #ffff00;
         }
 
         button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+        }
+
+        @keyframes vegasColors {
+            0% { color: #ff0000; }
+            25% { color: #ffff00; }
+            50% { color: #ff00ff; }
+            75% { color: #00ffff; }
+            100% { color: #ff0000; }
+        }
+
+        @keyframes buttonGlow {
+            0% { border-color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+            25% { border-color: #ffff00; text-shadow: 0 0 5px #ffff00; }
+            50% { border-color: #ff00ff; text-shadow: 0 0 5px #ff00ff; }
+            75% { border-color: #00ffff; text-shadow: 0 0 5px #00ffff; }
+            100% { border-color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+        }
+
+        /* Make sure the animations work with the fade effect */
+        .digit {
+            display: inline-block;
+            animation: vegasColors 4s infinite;
+        }
+
+        .changing {
+            animation: digitFade 0.5s ease-in-out, vegasColors 4s infinite;
         }
 
         @keyframes glitch {
@@ -105,6 +132,8 @@
 </head>
 <body>
     <canvas id="lavaCanvas"></canvas>
+    <canvas id="confettiCanvas"></canvas>
+    <canvas id="gameCanvas" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 150px; z-index: 9999; background-color: rgba(0,0,0,0.8); border: 2px solid #ff00ff;"></canvas>
     <div class="container">
         <h1>Pomodoro Timer</h1>
         <div class="timer" id="time">25:00</div>
@@ -244,5 +273,9 @@
         pauseButton.disabled = true;
         updateDisplay();
     </script>
+    <script src="lavaBackground.js"></script>
+    <script src="confetti.js"></script>
+    <script src="script.js"></script>
+    <script src="game.js"></script>
 </body>
 </html> 
